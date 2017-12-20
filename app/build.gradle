@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.sn.filterselectorlistview'
+version = '1'
+
+bintray {
+    user = "paragchauhan"
+    key = "31f563a1f09176a0b351102d5df23b43a56de230"
+
+    pkg {
+        repo = 'maven'
+        name = 'FilterSelectorListView'
+
+        licenses = ['Apache-2.0']
+    }
+    configurations = ['archives']
+}
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+
+    defaultConfig {
+        applicationId "com.sn.filterselectorlistview"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    task generateSourcesJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        classifier 'sources'
+    }
+
+    task generateJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath()
+                .join(File.pathSeparator))
+    }
+
+    task generateJavadocsJar(type: Jar) {
+        from generateJavadocs.destinationDir
+        classifier 'javadoc'
+    }
+    artifacts {
+        archives generateJavadocsJar
+        archives generateSourcesJar
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.0.2'
+    testCompile 'junit:junit:4.12'
+}
+
